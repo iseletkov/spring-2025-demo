@@ -1,6 +1,7 @@
 package com.example.demo.config
 
 import com.example.demo.handlers.CHandlerCheckPoints
+import com.example.demo.handlers.CHandlerFiles
 import com.example.demo.handlers.CHandlerGoods
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -33,6 +34,16 @@ class CConfigRouter {
         POST("/checkpoints", handlerCheckPoints::saveCheckPoint)
         DELETE("/checkpoints/{id}", handlerCheckPoints::deleteCheckPointById)
         DELETE("/checkpoints", handlerCheckPoints::deleteCheckPoint)
+        onError<Exception> { e, _ -> badRequest()
+            .bodyValueAndAwait("Ошибка на стороне сервера.\n"+e.message+"\n"+e.stackTrace.joinToString(separator = "\n"))
+        }
+    }
+
+    @Bean
+    fun routesFiles(
+        handlerFiles                        : CHandlerFiles
+    )                                       = coRouter  {
+        GET("/files/{id}", handlerFiles::getById )
         onError<Exception> { e, _ -> badRequest()
             .bodyValueAndAwait("Ошибка на стороне сервера.\n"+e.message+"\n"+e.stackTrace.joinToString(separator = "\n"))
         }
