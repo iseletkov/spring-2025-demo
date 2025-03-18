@@ -25,8 +25,7 @@ class CHandlerFiles (
     @Value("\${minio.bucket.name}")
     private lateinit var bakcetname         : String
 
-    private val minioClient =
-        MinioClient.builder()
+    private val minioClient                 = MinioClient.builder()
             .endpoint("http://192.168.1.102:50101")
             .credentials("mobileinspector", "mobileinspector_pass")
             .build()
@@ -65,8 +64,6 @@ class CHandlerFiles (
                 .bodyValueAndAwait("Параметр id не соответствует формату UUID v4!")
         }
 
-        print("Имя корзины: $bakcetname")
-
         val filename = "/files/$id.jpg"
 
         //Дополнительное логирование запросов к minio
@@ -76,7 +73,7 @@ class CHandlerFiles (
         //В файловую систему не сохранять - работает долго.
         val fileBytes: ByteArray = minioClient.getObject(
             GetObjectArgs.builder()
-                .bucket("mobileinspector")
+                .bucket(bakcetname)
                 .`object`(filename)
                 .build()
         ).use { stream ->
